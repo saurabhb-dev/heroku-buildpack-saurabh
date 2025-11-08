@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# The build directory is the first argument
+BUILD_DIR=$1
+
+echo "---> Running Patcher Buildpack"
+echo "---> Looking for index.js to modify"
+
+FILE_TO_PATCH="${BUILD_DIR}/index.js"
+
+# Define the exact strings for search-and-replace
+SEARCH_STRING="res.send('Hello world from buildpack-poc.');"
+REPLACE_STRING="res.send('Hello world from buildpack-poc. - edited by operate permission user');"
+
+# Check if the file exists
+if [ -f "$FILE_TO_PATCH" ]; then
+    echo "     Found $FILE_TO_PATCH. Applying patch..."
+    
+    # Use sed to find and replace the string.
+    # Using '|' as a delimiter for sed to avoid issues with characters in the string.
+    sed -i "s|${SEARCH_STRING}|${REPLACE_STRING}|" "$FILE_TO_PATCH"
+    
+    echo "     ...Patch applied successfully."
+else
+    echo "     WARNING: $FILE_TO_PATCH not found."
+fi
